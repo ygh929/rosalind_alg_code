@@ -1,0 +1,26 @@
+def threepart(X):
+    r=X[0]
+    X1=[]
+    X2=[]
+    X3=[]
+    for i in X:
+        if i<r:
+            X1.append(i)
+        elif i==r:
+            X2.append(i)
+        else:
+            X3.append(i)
+    return [X1,X2,X3]
+
+def quicksort(X):
+    l=len(X)
+    if l<=1:
+        return X
+    else:
+        X_3=threepart(X)
+        return quicksort(X_3[0])+X_3[1]+quicksort(X_3[2])
+
+f=open('rosalind_qs.txt','r')
+f.readline()
+num=map(int,f.readline().split())
+print ' '.join(map(str,quicksort(num)))

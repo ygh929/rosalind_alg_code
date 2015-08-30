@@ -1,0 +1,72 @@
+class vet(int):
+    dist=float('inf')
+    go={}
+    def addgo(self,obj,l):
+        if self.go:
+            self.go[obj]=l
+        else:
+            self.go={obj:l}
+
+def readedges(E,n):
+    G=map(vet,range(n))
+    for e in E:
+        i1=e[0]-1
+        i2=e[1]-1
+        l=e[2]
+        G[i1].addgo(i2,l)
+    return G
+
+def shortC(v1,v2,G):
+    i1=v1-1
+    i2=v2-1
+    Q=[]
+    Q.append(i1)
+    G[i1].dist=0
+
+    result=-1
+    while Q:
+        Q=sorted(Q,key=lambda x:G[x].dist)
+        ci=Q.pop(0)
+        for i in G[ci].go:
+            newdist=G[ci].dist+G[ci].go[i]
+            if G[i].dist==float('inf'):
+                Q.append(i)
+            if newdist<G[i].dist:
+                G[i].dist=newdist
+                if i==i2:
+                    result=G[i2].dist
+                    break
+    return result
+
+f=open('rosalind_cte.txt','r')
+k=int(f.readline())
+result=range(k)
+i=0
+temp=map(int,f.readline().split())
+while True:
+
+    if temp:
+        nv=temp[0]
+        ne=temp[1]
+        E=[]
+        e1=map(int,f.readline().split())
+        for j in range(ne-1):
+
+            e=map(int,f.readline().split())
+            E.append(e)
+
+        G=readedges(E,nv)
+        tempres=shortC(e1[1],e1[0],G)
+        if tempres==-1:
+            result[i]=-1
+        else:
+            result[i]=tempres+e1[2]
+        i=i+1
+        temp=map(int,f.readline().split())
+    else:
+        temp=map(int,f.readline().split())
+    if i==k:
+        break
+
+
+print ' '.join(map(str,result))

@@ -1,0 +1,20 @@
+def twowaypart(X):
+    X1=[]
+    X2=[]
+    X3=[]
+    a=X.pop(0)
+    X2.append(a)
+    for i in X:
+        if i<a:
+            X1.append(i)
+        elif i>a:
+            X3.append(i)
+        else:
+            X2.append(i)
+    return X1+X2+X3
+
+f=open('rosalind_par.txt','r')
+f.readline()
+num=f.readline().split()
+result=twowaypart(map(int,num))
+print ' '.join(map(str,result))

@@ -1,0 +1,86 @@
+class vet(int):
+    go=[]
+    come=[]
+    def addgo(self,i):
+        if self.go:
+            self.go.append(i)
+        else:
+            self.go=[i]
+    def addcome(self,i):
+        if self.come:
+            self.come.append(i)
+        else:
+            self.come=[i]
+
+
+def readedges(E,n):
+    G=map(vet,range(n))
+    for e in E:
+        i1=e[0]-1
+        i2=e[1]-1
+        G[i1].addgo(i2)
+        G[i2].addcome(i1)
+    return G
+
+def toposort(G):
+    Q=[]
+    result=[]
+    for i in range(len(G)):
+        if not G[i].come:
+            Q.append(i)
+    while Q:
+        ci=Q.pop(0)
+        result.append(ci)
+        for j in G[ci].go:
+            G[j].come.remove(ci)
+            if not G[j].come:
+                Q.append(j)
+    return result
+
+def testham(G_order,G):
+    result=[1]
+    for i in range(len(G)-1):
+        #should use G_order[i] as index in G!
+        if G_order[i+1] not in G[G_order[i]].go:
+            result=[-1]
+            break
+    if result[0]!=-1:
+        result=result+map(lambda x:x+1, G_order)
+    return result
+
+def testham1(G):
+    Q=[]
+    result=[1]
+    for i in range(len(G)):
+        if not G[i].come:
+
+            Q.append(i)
+    while Q:
+        if len(Q)==1:
+            ci=Q.pop(0)
+            result.append(ci+1)
+            for i in G[ci].go:
+                G[i].come.remove(ci)
+                if not G[i].come:
+                    Q.append(i)
+        else:
+            result=[-1]
+            break
+    return result
+
+f=open('rosalind_hdag.txt','r')
+k=int(f.readline())
+for i in range(k):
+    temp=map(int,f.readline().split())
+    nv=temp[0]
+    ne=temp[1]
+    E=[]
+    for j in range(ne):
+        e=map(int,f.readline().split())
+        E.append(e)
+    G=readedges(E,nv)
+    G1=readedges(E,nv)
+    G_ord=toposort(G)
+    result=testham(G_ord,G)
+    print ' '.join(map(str,result))
+    print ' '.join(map(str,testham1(G1)))

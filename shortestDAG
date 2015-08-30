@@ -1,0 +1,64 @@
+class vet(int):
+    tra=0
+    go={}
+    dist=float("inf")
+    def addgo(self,i,l):
+        if self.go:
+            self.go[i]=l
+        else:
+            self.go={i:l}
+
+def readedges(E,n):
+    G=map(vet,range(1,n+1))
+    for e in E:
+        i1=e[0]-1
+        i2=e[1]-1
+        G[i1].addgo(i2,e[2])
+    return G
+
+def dfs(G,i):
+    G[i].tra=1
+    Q=[]
+    Q.append(i)
+    result=[]
+    while Q:
+        #update .tra here!!!
+        current=Q[0]
+        G[current].tra=1
+        possgo=[x for x in G[current].go if G[x].tra==0]
+        if not possgo:
+            result.append(Q.pop(0))
+
+        else:
+            Q=possgo+Q
+    return result
+
+def update(G,seq):
+    G[seq[-1]].dist=0
+    for i in range(len(seq)-1,0,-1):
+        current=seq[i]
+        for j in G[current].go.keys():
+            newdist=G[current].dist+G[current].go[j]
+            if newdist<G[j].dist:
+                G[j].dist=newdist
+
+f=open("rosalind_sdag.txt",'r')
+num=map(int,f.readline().split())
+nv=num[0]
+ne=num[1]
+E=[]
+for ki in range(ne):
+    E.append(map(int,f.readline().split()))
+G=readedges(E,nv)
+seq=dfs(G,0)
+update(G,seq)
+result=[x.dist for x in G]
+result_1=[]
+for x in result:
+    if x<float('inf'):
+        result_1.append(x)
+    else:
+        result_1.append('x')
+print ' '.join(map(str,result_1))
+
+

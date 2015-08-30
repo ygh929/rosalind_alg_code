@@ -1,0 +1,126 @@
+'''
+from random import *
+n=3
+k=8
+f=open('test.txt','w')
+f.write('1\n\n')
+f.write(str(n)+' '+str(k)+'\n')
+S=range(1,n+1)+range(-1,-n-1,-1)
+T=[]
+for i in range(k):
+    current=sample(S,2)
+    while set(current) in T:
+        current=sample(S,2)
+    T.append(set(current))
+    f.write(' '.join(map(str,current))+'\n')
+
+f.close()
+'''
+import sys
+sys.setrecursionlimit(10000)
+
+class vet(int):
+    go=[]
+    def addgo(self,i):
+        if self.go:
+            self.go.append(i)
+        else:
+            self.go=[i]
+    tra=0
+
+def dfs(G,i):
+    G[i].tra=1
+    r=[]
+    possgo=[x for x in G[i].go if G[x].tra==0]
+    while possgo:
+        j=possgo[0]
+        r=r+dfs(G,j)
+        possgo=[x for x in G[i].go if G[x].tra==0]
+    r=r+[i]
+    return r
+
+def data2graph(E,n):
+    G=map(vet,range(1,n+1)+range(-1,-n-1,-1))
+    for e in E:
+        i1=G.index(e[0])
+        i2=G.index(e[1])
+        i_1=G.index(-e[0])
+        i_2=G.index(-e[1])
+        G[i_1].addgo(i2)
+        G[i_2].addgo(i1)
+
+    return G
+
+def checktra(G):
+    return reduce(lambda i,j:i and j, map(lambda x: x.tra,G))
+
+def dfs_whole(G):
+    result=[]
+    while not checktra(G):
+        i=map(lambda x:x.tra,G).index(0)
+        result=result+dfs(G,i)
+
+    return result
+
+def test2sum(X):
+    result=True
+    for i in range(len(X)-1):
+        for j in range(i+1,len(X)):
+            if X[i]+X[j]==0:
+                result=False
+                break
+    return result
+
+def checkresult(res,E):
+    D=[]
+    for e in E:
+        D.append(e[0] in res or e[1] in res)
+    return reduce(lambda x,y:x and y, D)
+
+#read data
+
+f=open('rosalind_2sat.txt','r')
+k=int(f.readline())
+f.readline()
+for ki in range(k):
+    num=map(int,f.readline().split())
+    nv=num[0]
+    ne=num[1]
+    E=[]
+    for i in range(ne):
+        E.append(map(int,f.readline().split()))
+    G=data2graph(E,nv)
+    order=dfs_whole(G)
+    E1=map(lambda x:map(lambda i:i*-1,x),E)
+    G1=data2graph(E1,nv)
+    result=[1]
+
+    while order:
+        i=order[-1]
+        comp=dfs(G1,i)
+        if test2sum(map(lambda x:G1[x],comp)):
+            result=result+map(lambda x:-G1[x],comp)
+            for i in comp:
+                vi=G1[i]
+                order.remove(G1.index(-vi))
+                order.remove(i)
+        else:
+            result=0
+            break
+    if result==0:
+        print result
+    else:
+        result=sorted(result,key=lambda x:abs(x))
+        print ' '.join(map(str,result))
+        #print checkresult(result,E)
+    f.readline()
+
+'''
+g=open('test.txt','w')
+num=map(int,f.readline().split())
+g.write(' '.join(map(str,num))+'\n')
+nv=num[0]
+ne=num[1]
+for i in range(ne):
+    g.write(f.readline())
+'''

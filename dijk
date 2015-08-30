@@ -1,0 +1,63 @@
+class vet(int):
+    go={}
+    def addgo(self,ind,l):
+        if self.go:
+            self.go[ind]=l
+        else:
+            self.go={ind:l}
+    dist=100000
+
+def readedges(E,n):
+    G=map(vet,range(1,n+1))
+    for e in E:
+        v1=vet(e[0])
+        v2=vet(e[1])
+        l=e[2]
+        i1=v1-1
+        i2=v2-1
+        G[i1].addgo(i2,l)
+    return G
+
+def dijk(G):
+    i1=0
+    Q=[i1]
+    G[i1].dist=0
+    while Q:
+
+        Q=sorted(Q,key=lambda x:G[x].dist)
+        current=G[Q.pop(0)]
+
+        for i in current.go:
+            tempdist=current.dist+current.go[i]
+            if tempdist<G[i].dist:
+                G[i].dist=tempdist
+                if i not in Q:
+                    Q.append(i)
+    result=[]
+    for i in G:
+        result.append(i.dist)
+        if result[-1]==100000:
+            result[-1]=-1
+    return result
+
+f=open('rosalind_dij.txt','r')
+nv=int(f.readline().split()[0])
+E=[]
+temp=map(int,f.readline().split())
+while temp:
+    E.append(temp)
+    temp=map(int,f.readline().split())
+G=readedges(E,nv)
+result=dijk(G)
+f.close()
+
+print ' '.join(map(str,result))
+
+#check
+'''
+g=open('rosalind_dij_8_output.txt','r')
+correct=map(int,g.readline().split())
+for i in range(len(correct)):
+    print result[i]==correct[i]
+'''
+

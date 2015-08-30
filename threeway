@@ -1,0 +1,18 @@
+def threeway(A):
+    B1=[]
+    B2=[]
+    B3=[]
+    temp=A[0]
+    for i in A:
+        if i==temp:
+            B2.append(i)
+        elif i>temp:
+            B3.append(i)
+        else:
+            B1.append(i)
+    return B1+B2+B3
+
+f=open('rosalind_par3.txt','r')
+f.readline()
+num=map(int,f.readline().split())
+print ' '.join(map(str, threeway(num)))

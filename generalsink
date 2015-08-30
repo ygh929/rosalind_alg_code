@@ -1,0 +1,67 @@
+class vet(int):
+    tra=0
+    go=[]
+    def addgo(self,i):
+        if self.go:
+            self.go.append(i)
+        else:
+            self.go=[i]
+
+def readedges(E,n):
+    G=map(vet,range(n))
+    for e in E:
+        i1=e[0]-1
+        i2=e[1]-1
+        G[i1].addgo(i2)
+    return G
+
+def dfs(G,i):
+    G[i].tra=1
+    Q=[i]
+    result=[]
+    while Q:
+        current=Q[0]
+        possgo=[x for x in G[current].go if G[x].tra==0]
+        if possgo:
+            Q=possgo+Q
+            for j in possgo:
+                G[j].tra=1
+        else:
+            result.append(Q.pop(0))
+    return result
+
+def checktra(G):
+    return reduce(lambda x,y:x and y, map(lambda v:v.tra==1,G))
+
+f=open('rosalind_gs.txt','r')
+k=int(f.readline())
+f.readline()
+result=[]
+for ki in range(k):
+    num=map(int,f.readline().split())
+    nv=num[0]
+    ne=num[1]
+    E=[]
+    for count in range(ne):
+        e=map(int,f.readline().split())
+        E.append(e)
+    G=readedges(E,nv)
+    order=[]
+    while not checktra(G):
+        i=map(lambda x:x.tra,G).index(0)
+        order=order+dfs(G,i)
+    root=order[-1]
+    for v in G:
+        v.tra=0
+    comp=dfs(G,root)
+    if checktra(G):
+        result.append(root+1)
+    else:
+        result.append(-1)
+    f.readline()
+
+print ' '.join(map(str,result))
+
+
+
+

@@ -1,0 +1,71 @@
+class vet(int):
+    link=[]
+    col=2
+    tra=0
+    def addlink(self,obj):
+        if self.link:
+            self.link.append(obj)
+        else:
+            self.link=[obj]
+    def getcol(self,col):
+        self.col=col
+
+def readedg(E):
+    G=[]
+    for i in E:
+        vl=vet(i[0])
+        vr=vet(i[1])
+        if vl not in G:
+            G.append(vl)
+        if vr not in G:
+            G.append(vr)
+        il=G.index(vl)
+        ir=G.index(vr)
+        G[il].addlink(ir)
+        G[ir].addlink(il)
+    return (G)
+
+def color (v0,G,r):
+    v0.tra=1
+    if v0.col==2:
+        v0.getcol(0)
+    for i in v0.link:
+        v=G[i]
+        if v.col==2:
+            v.getcol(1-v0.col)
+        elif v.col==v0.col:
+            r=r+1
+        if v.tra==0:
+            r=color(v,G,r)
+    return r
+
+
+f=open('rosalind_bip.txt','r')
+num=int(f.readline())
+f.readline()
+result=[0]*num
+for i in range(num):
+
+    data=[]
+    temp= f.readline().split()
+    temp= f.readline().split()
+    while temp:
+
+        temp=map(int,temp)
+        data.append(temp)
+        temp= f.readline().split()
+    G=readedg(data)
+    tempres=color(G[0],G,0)
+    if tempres >0:
+        tempres=-1
+    else:
+        tempres=1
+    result[i]=tempres
+
+
+
+print ' '.join(map(str,result))
+
+
+
+

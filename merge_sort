@@ -1,0 +1,35 @@
+def msort(X):
+    H=X[:]
+    l=len(X)
+    if l==1:
+        return (H)
+    elif l==2:
+        temp=H[0]
+        if temp>H[1]:
+            H[0]=H[1]
+            H[1]=temp
+        return (H)
+    else:
+        H1=H[:l/2]
+        H2=H[l/2:]
+        H1=msort(H1)
+        H2=msort(H2)
+        Ht=list((H1,H2))
+        for i in range(l):
+            try:
+                H[i]=Ht[H1[0]>H2[0]].pop(0)
+            except:
+                try:
+                    H[i]=H1.pop(0)
+                except:
+                    H[i]=H2.pop(0)
+
+
+        return (H)
+
+
+f=open('rosalind_ms.txt','r')
+f.readline()
+num=f.readline().split()
+num=map(int,num)
+print ' '.join(map(str,msort(num)))

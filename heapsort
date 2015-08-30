@@ -1,0 +1,57 @@
+class heap(list):
+    def heapappend(self,num):
+        self.append(num)
+        current=len(self)-1
+        while current >=1:
+            new = (current-1)/2
+            if self[new]>self[current]:
+                temp = self[new]
+                self[new]=self[current]
+                self[current]=temp
+                current=new
+            else:
+                break
+
+    def heappop(self):
+        if self:
+            if len(self)==1:
+                return self.pop()
+            else:
+                #switch first and last
+                temp=self[-1]
+                self[-1]=self[0]
+                self[0]=temp
+                result=self.pop(-1)
+                current=0
+                l=len(self)
+                while current<l/2:
+                    nl=current*2+1
+                    nr=current*2+2
+                    try:
+                        if self[nl]<self[nr]:
+                            new=nl
+                        else:
+                            new=nr
+                    except:
+                        new=nl
+                    if self[current]<self[new]:
+                        break
+                    else:
+                        temp=self[new]
+                        self[new]=self[current]
+                        self[current]=temp
+                        current=new
+                return result
+
+
+
+
+h=heap()
+f=open('rosalind_hs.txt','r')
+f.readline()
+nums=map(int,f.readline().split())
+map(h.heapappend,nums)
+result=[]
+for i in range(len(h)):
+    result.append(h.heappop())
+print ' '.join(map(str,result))

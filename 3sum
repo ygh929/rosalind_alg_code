@@ -1,0 +1,39 @@
+def three_sum(X):
+    S=sorted(X)
+    ordered_index=sorted(range(len(X)),key=lambda i:X[i])
+
+    result=[]
+    for i in range(len(X)-2):
+
+        start=i+1
+        end=len(X)-1
+        while start<end:
+            if S[i]+S[start]+S[end]==0:
+                result=[i,start,end]
+                break
+            elif S[i]+S[start]+S[end]>0:
+                end=end-1
+            else:
+                start=start+1
+        if result:
+            break
+
+    if result:
+        result=map(lambda x:ordered_index[x]+1,result)
+        result=sorted(result)
+        print ' '.join(map(str,result))
+    else:
+        print '-1'
+
+f=open('rosalind_3sum.txt','r')
+nl=int(f.readline().split()[0])
+for i in range(nl):
+    num=f.readline().split()
+    num=map(int,num)
+    three_sum(num)
+
+
+
+
+
+

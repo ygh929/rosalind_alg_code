@@ -1,0 +1,108 @@
+from temp_scc import *
+from random import *
+'''
+k=20
+n=10
+record=[]
+i=0
+f=open('test.txt','w')
+f.write(' '.join(map(str,[n,k])))
+f.write('\n')
+while i<k:
+    temp1=randint(1,10)
+    temp2=randint(1,10)
+    if [temp1,temp2] not in record and temp1!=temp2:
+        record.append([temp1,temp2])
+        f.write(' '.join(map(str,[temp1,temp2])))
+        f.write('\n')
+        i=i+1
+f.close()
+'''
+class vet(int):
+    go=[]
+    come=[]
+    tra=0
+    def addgo(self,i):
+        if self.go:
+            self.go.append(i)
+        else:
+            self.go=[i]
+    def addcome(self,i):
+        if self.come:
+            self.come.append(i)
+        else:
+            self.come=[i]
+
+def readedges(E,n):
+    G=map(vet,range(1,n+1))
+    for e in E:
+        i1=e[0]-1
+        i2=e[1]-1
+        G[i1].addgo(i2)
+        G[i2].addcome(i1)
+    return G
+
+def dfs(G,i):
+    G[i].tra=1
+    possgo=filter(lambda x: G[x].tra==0,G[i].go)
+    r=[]
+    while possgo:
+        #make sure all the nodes pointed to by a node entered the stack earlier
+        j=possgo[0]
+        r=r+dfs(G,j)
+        possgo=filter(lambda x: G[x].tra==0,G[i].go)
+
+    ###this step is taken for both situations!!!
+    r=r+[i]
+    return r
+
+def testtra(G):
+    r=reduce(lambda x,y:x and y, map(lambda x: G[x].tra,range(nv)))
+    return r
+
+f=open('test.txt','r')
+num=map(int,f.readline().split())
+nv=num[0]
+ne=num[1]
+E=[]
+for i in range(ne):
+    e=map(int,f.readline().split())
+    E.append(e)
+
+G=readedges(E,nv)
+order=[]
+while not testtra(G):
+    i=map(lambda x: G[x].tra,range(nv)).index(0)
+    order=order+dfs(G,i)
+#reverse the direction of the edges
+
+def rev(e0):
+    e=e0[:]
+    temp=e[0]
+    e[0]=e[1]
+    e[1]=temp
+    return e
+
+E_1=map(rev,E)
+G_1=readedges(E_1,nv)
+result=0
+
+while order:
+    result=result+1
+    i=order[-1]
+    comp=dfs(G_1,i)
+    order=[x for x in order if x not in comp]
+    print map(lambda i:i+1,comp)
+
+print result
+
+vert=range(1,nv+1)
+edges={}
+for i in G:
+    edges[i]=map(lambda x:x+1,i.go)
+
+comp2=[]
+for scc in strongly_connected_components_tree(vert, edges):
+    comp2.append([scc])
+    print scc
+print len(comp2)

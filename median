@@ -1,0 +1,32 @@
+from random import sample
+def threepart(X):
+    l=len(X)
+    X1=[]
+    X2=[]
+    X3=[]
+    r=sample(X,1)[0]
+    for i in X:
+        if i < r:
+            X1.append(i)
+        elif i==r:
+            X2.append(i)
+        else:
+            X3.append(i)
+    return [X1,X2,X3]
+
+def ksmallest(X,k):
+    threeX=threepart(X)
+    l=map(len,threeX)
+    if k<=l[0]:
+        return ksmallest(threeX[0],k)
+    elif k>l[0]+l[1]:
+        return ksmallest(threeX[2],k-l[0]-l[1])
+    else:
+        return threeX[1][0]
+
+
+f=open('rosalind_med.txt','r')
+f.readline()
+num=map(int,f.readline().split())
+k=int(f.readline())
+print ksmallest(num,k)

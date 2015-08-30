@@ -1,0 +1,35 @@
+class vet(int):
+    dist=float('inf')
+
+def update(G,E):
+
+    for e in E:
+        i1=e[0]-1
+        i2=e[1]-1
+        l=e[2]
+        newdist=G[i1].dist+l
+        if newdist<G[i2].dist:
+            G[i2].dist=newdist
+
+    return G
+
+f=open('rosalind_bf.txt','r')
+n=map(int,f.readline().split())
+nv=n[0]
+ne=n[1]
+E=[]
+G=map(vet,range(nv))
+
+for i in range(ne):
+    E.append(map(int,f.readline().split()))
+G[0].dist=0
+
+for it in range(nv):
+    G=update(G,E)
+result=[]
+for i in G:
+    result.append(i.dist)
+    if result[-1]==float('inf'):
+        result[-1]='x'
+
+print ' '.join(map(str,result))

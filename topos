@@ -1,0 +1,50 @@
+class vet(int):
+    come=[]
+    go=[]
+    def addgo(self,i):
+        if self.go:
+            self.go.append(i)
+        else:
+            self.go=[i]
+    def addcome(self,i):
+        if self.come:
+            self.come.append(i)
+        else:
+            self.come=[i]
+
+def readedgs(E,n):
+    G=map(vet, range(1,n+1))
+    for e in E:
+        i1=e[0]-1
+        i2=e[1]-1
+        G[i1].addgo(i2)
+        G[i2].addcome(i1)
+    return G
+
+def toposort(G):
+    Q=[]
+    result=[]
+    for v in G:
+        if not v.come:
+            Q.append(v-1)
+    while Q:
+        ci=Q.pop(0)
+        result.append(ci+1)
+        for i in G[ci].go:
+            G[i].come.remove(ci)
+            if not G[i].come:
+                Q.append(i)
+    return result
+
+f=open('rosalind_ts.txt','r')
+nv=int(f.readline().split()[0])
+temp=map(int,f.readline().split())
+E=[]
+while temp:
+    E.append(temp)
+    temp=map(int,f.readline().split())
+G=readedgs(E,nv)
+
+print ' '.join(map(str,toposort(readedgs(E,nv))))
+
+

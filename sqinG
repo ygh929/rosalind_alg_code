@@ -1,0 +1,36 @@
+from numpy import *
+def readedges(E,n):
+    M=reshape(zeros(n**2),[n,n])
+    for e in E:
+        i1=e[0]-1
+        i2=e[1]-1
+        M[i1,i2]=1
+        M[i2,i1]=1
+    return M
+
+def sqinG(M):
+    New=linalg.matrix_power(M,2)
+    for i in range(len(New)):
+        New[i,i]=0
+    exist=(New>=2).sum()
+    if exist:
+        return 1
+    else:
+        return -1
+
+
+f=open('rosalind_sq.txt','r')
+k=int(f.readline())
+result=range(k)
+f.readline()
+for i in range(k):
+    E=[]
+    n=int(f.readline().split()[0])
+    temp=f.readline().split()
+    while temp:
+        num=map(int,temp)
+        E.append(num)
+        temp=f.readline().split()
+    M=readedges(E,n)
+    result[i] = sqinG(M)
+print ' '.join(map(str,result))

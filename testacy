@@ -1,0 +1,76 @@
+class vet(int):
+    come=[]
+    go=[]
+    def addcome(self,ind):
+        if self.come:
+            self.come.append(ind)
+        else:
+            self.come=[ind]
+    def addgo(self,ind):
+        if self.go:
+            self.go.append(ind)
+        else:
+            self.go=[ind]
+
+def readedges(E):
+    G=[]
+    for e in E:
+        v1=vet(e[0])
+        v2=vet(e[1])
+        if v1 not in G:
+            G.append(v1)
+        if v2 not in G:
+            G.append(v2)
+        i1=G.index(v1)
+        i2=G.index(v2)
+        G[i1].addgo(i2)
+        G[i2].addcome(i1)
+    return G
+
+def checkacyc(G):
+    A=[]
+    B=[]
+    for v in G:
+        if v.come:
+            A.append(v)
+        else:
+            B.append(v)
+    while B:
+        tempv=B.pop(0)
+        tempi=G.index(tempv)
+        for i in tempv.go:
+            G[i].come.remove(tempi)
+            if not G[i].come:
+                B.append(G[i])
+                A.remove(G[i])
+    if A:
+        return -1
+    else:
+        return 1
+
+
+f=open('rosalind_dag.txt','r')
+num=int(f.readline())
+f.readline()
+result=[0]*num
+for i in range(num):
+
+    data=[]
+    temp= f.readline().split()
+    temp= f.readline().split()
+    while temp:
+
+        temp=map(int,temp)
+        data.append(temp)
+        temp= f.readline().split()
+    G=readedges(data)
+    tempres=checkacyc(G)
+
+    result[i]=tempres
+
+
+
+print ' '.join(map(str,result))
+
+
+

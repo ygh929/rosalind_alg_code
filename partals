@@ -1,0 +1,56 @@
+def threepart(X):
+    r=X[0]
+    X1=[]
+    X2=[]
+    X3=[]
+    for i in X:
+        if i<r:
+            X1.append(i)
+        elif i>r:
+            X3.append(i)
+        else:
+            X2.append(i)
+    return [X1,X2,X3]
+
+def select(X,k):
+    threeX=threepart(X)
+    l=map(len,threeX)
+    if k<=l[0]:
+        return select(threeX[0],k)
+    elif k<=l[0]+l[1]:
+        return threeX[0]+[threeX[1][0]]*(k-l[0])
+    else:
+        return threeX[0]+threeX[1]+select(threeX[2],k-l[0]-l[1])
+
+def merges(X):
+    l=len(X)
+    X1=X[:l/2]
+    X2=X[l/2:]
+    if l>2:
+        X1=merges(X1)
+        X2=merges(X2)
+    elif l==2:
+        X1=[X[0]]
+        X2=[X[1]]
+    else:
+        X1=X
+        X2=[]
+    newX=[]
+    Xt=[X1,X2]
+    for i in range(l):
+        try:
+            newX.append(Xt[Xt[0][0]>Xt[1][0]].pop(0))
+        except:
+            try:
+                newX.append(Xt[0].pop(0))
+            except:
+                newX.append(Xt[1].pop(0))
+    return newX
+
+f=open('rosalind_ps.txt','r')
+f.readline()
+num=map(int,f.readline().split())
+k=int(f.readline())
+
+
+print ' '.join(map(str,merges(select(num,k))))

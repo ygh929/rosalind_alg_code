@@ -1,0 +1,69 @@
+class vet(int):
+    dist=float('inf')
+    go={}
+
+def update(G,E,k):
+    for i in range(k):
+        for e in E:
+          i1=e[0]-1
+          i2=e[1]-1
+          l=e[2]
+          newdist=G[i1].dist+l
+          if newdist<G[i2].dist:
+              G[i2].dist=newdist
+    return G
+
+def checkinf(A):
+    result=False
+    for i in A:
+        if i==float('inf'):
+            result=True
+    return result
+
+def countnoninf(A):
+    result=0
+    for i in A:
+        if i!=float('inf'):
+            result=result+1
+    return result
+
+def checknwcyc(G,E):
+    G[0].dist=0
+    n=len(G)
+    result=-1
+    count=0
+    while True:
+        dist=map(lambda i:G[i].dist,range(len(G)))
+        G=update(G,E,1)
+        newdist=map(lambda i:G[i].dist,range(len(G)))
+        if newdist==dist:
+            if checkinf(dist):
+                G[dist.index(float('inf'))].dist=0
+            else:
+                result=-1
+                break
+        else:
+            count=count+1
+            if count > countnoninf(dist):
+                result=1
+                break
+    return result
+
+
+
+f=open('rosalind_nwc.txt','r')
+k=int(f.readline())
+result=[]
+for i in range(k):
+    num=map(int,f.readline().split())
+    nv=num[0]
+    ne=num[1]
+    E=[]
+    for j in range(ne):
+        e=map(int,f.readline().split())
+        E.append(e)
+    #be careful about the initialization of G!!
+    G=map(vet,range(1,nv+1))
+    result.append(checknwcyc(G,E))
+
+print ' '.join(map(str,result))

@@ -1,0 +1,35 @@
+def countinv(A,r0):
+    l=len(A)
+    r=0
+    if l>1:
+        A1=A[:l/2]
+        A2=A[l/2:]
+        r1=countinv(A1,0)
+        r2=countinv(A2,0)
+        A1=r1['a']
+        A2=r2['a']
+        r=r1['inv']+r2['inv']
+        A_new=[]
+        for i in range(l):
+            try:
+                if A1[0]<=A2[0]:
+                    A_new.append(A1.pop(0))
+                else:
+                    A_new.append(A2.pop(0))
+                    r=r+len(A1)
+            except:
+                try:
+                    A_new.append(A1.pop(0))
+                except:
+                    A_new.append(A2.pop(0))
+    else:
+        A_new=A
+        r=0
+    return {'a':A_new,'inv':r}
+
+
+
+f=open('rosalind_inv.txt','r')
+f.readline()
+A=map(int,f.readline().split())
+print countinv(A,0)['inv']
